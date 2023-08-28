@@ -16,7 +16,7 @@ function Login(props) {
     const [logged, setLogged] = useState(false);
 
     useEffect(() => {
-        Axios.get('http://localhost:3001/api/auth/check')
+        Axios.get('http://192.168.1.2:3001/api/auth/check')
             .then((response) => {
                 setLogged(response.data.isLogged);
                 if (response.data.isLogged) {
@@ -86,7 +86,7 @@ function Login(props) {
                                     if (newValue.length <= 0) {
                                         username.classList.replace('noerror-inp', 'error-inp');
                                     } else {
-                                        Axios.get('http://localhost:3001/api/username/check', { params: { username: newValue } })
+                                        Axios.get('http://192.168.1.2:3001/api/username/check', { params: { username: newValue } })
                                             .then((response) => {
                                                 if (response.data) {
                                                     if (response.data.usernameExist) {

@@ -7,7 +7,7 @@ function Messages(props) {
   const [logged, setLogged] = useState(false);
 
   useEffect(() => {
-    Axios.get('http://localhost:3001/api/auth/check')
+    Axios.get('http://192.168.1.2:3001/api/auth/check')
       .then((response) => {
         setLogged(response.data.isLogged);
         if (!response.data.isLogged) {

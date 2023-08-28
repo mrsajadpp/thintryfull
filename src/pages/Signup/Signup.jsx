@@ -16,7 +16,7 @@ function Signup(props) {
   const [logged, setLogged] = useState(false);
 
   useEffect(() => {
-    Axios.get('http://localhost:3001/api/auth/check')
+    Axios.get('http://192.168.1.2:3001/api/auth/check')
       .then((response) => {
         setLogged(response.data.isLogged);
         if (response.data.isLogged) {
@@ -73,6 +73,30 @@ function Signup(props) {
     };
   }, []);
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('http://192.168.1.2:3001/api/auth/signup', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        // Handle success, maybe redirect
+        navigate('/auth/login');
+      } else {
+        // Handle error case
+        console.error('Signup failed');
+      }
+    } catch (error) {
+      console.error('Signup failed', error);
+    }
+  };
+
   return (
     <div>
       <div className="loginForm">
@@ -80,7 +104,7 @@ function Signup(props) {
           <img src={logo} alt="" />
         </div>
         <div className="inputs">
-          <form action="/auth/signup" method="post">
+          <form onSubmit={handleSubmit}>
             <div className="name">
               <div className="input">
                 <input type="text" className="noerror-inp" id="firstname" name="firstname" placeholder="First Name"
@@ -116,7 +140,7 @@ function Signup(props) {
                 if (newValue.length <= 0) {
                   username.classList.replace('noerror-inp', 'error-inp');
                 } else {
-                  Axios.get('http://localhost:3001/api/username/check', { params: { username: newValue } })
+                  Axios.get('http://192.168.1.2:3001/api/username/check', { params: { username: newValue } })
                     .then((response) => {
                       if (response.data) {
                         if (response.data.usernameExist) {
