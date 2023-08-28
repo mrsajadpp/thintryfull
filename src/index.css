@@ -1,10 +1,27 @@
+html {
+  scroll-behavior: smooth;
+}
+
+@font-face {
+  font-family: 'Thintry'; 
+  src: url('https://www.dropbox.com/scl/fi/3oh9we0thtfq9h7trvisd/thintry.ttf?rlkey=kb33d2o9uxhr6pc1dcs66v0o6&dl=1') format('truetype');
+}
+
+/* Disable right-click context menu for the entire page */
 body {
-  margin: 0;
+  margin: 0px;
+  /* -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding: 0px;
+  background-color: #000;
 }
 
 code {
