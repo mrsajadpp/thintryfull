@@ -4,21 +4,35 @@ import { useNavigate } from 'react-router-dom';
 
 function Messages(props) {
   const navigate = useNavigate();
-  const [logged, setLogged] = useState(false);
+
+  function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires.toUTCString()}; path=/`;
+  }
+
+  function getUserDataFromCookie() {
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('userData='));
+
+    if (cookieValue) {
+      const valuePair = cookieValue.split('=');
+      if (valuePair.length === 2) {
+        return JSON.parse(decodeURIComponent(valuePair[1]));
+      }
+    }
+    return null;
+  }
 
   useEffect(() => {
-    Axios.get('http://192.168.1.2:3001/api/auth/check', { withCredentials: true })
-      .then((response) => {
-        setLogged(response.data.isLogged);
-        console.log(response.data)
-        if (!response.data.isLogged) {
-          navigate('/auth/login'); // Redirect to /auth/login if not logged in
-        }
-      })
-      .catch((err) => console.log(err));
+    // Check if the user is already logged in using the cookie
+    const userData = getUserDataFromCookie();
+    if (!userData) {
+      navigate("/auth/login");
+      return; // No need to continue checking if already logged in
+    }
   }, [navigate]);
-
-  console.log(logged);
 
   useEffect(() => {
     const defaultTitle = "Thintry - Microblog";

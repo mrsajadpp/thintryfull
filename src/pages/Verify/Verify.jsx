@@ -11,18 +11,38 @@ import logo from './logo.png';
 import './Verify.css';
 
 function Verify(props) {
+    function setCookie(name, value, days) {
+        const expires = new Date();
+        expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires.toUTCString()}; path=/`;
+    }
+
+    function getUserDataFromCookie() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('userData='));
+
+        if (cookieValue) {
+            const valuePair = cookieValue.split('=');
+            if (valuePair.length === 2) {
+                return JSON.parse(decodeURIComponent(valuePair[1]));
+            }
+        }
+        return null;
+    }
+
+
     const navigate = useNavigate();
-    const [logged, setLogged] = useState(false);
 
     useEffect(() => {
-        Axios.get('http://localhost:3001/api/auth/check', { withCredentials: true })
-            .then((response) => {
-                setLogged(response.data.isLogged);
-                if (response.data.isLogged) {
-                    navigate('/');
-                }
-            })
-            .catch((err) => console.log(err));
+        // Check if the user is already logged in using the cookie
+        const userData = getUserDataFromCookie();
+        if (userData) {
+            if (userData.status) {
+                navigate("/profile");
+                return; // No need to continue checking if already logged in
+            }
+        }
     }, [navigate]);
 
     useEffect(() => {
@@ -69,6 +89,7 @@ function Verify(props) {
 
     const verify = async (event) => {
         event.preventDefault();
+        console.log('otp')
 
         let otpInp = document.getElementById('otp');
         const queryString = window.location.search;
@@ -78,26 +99,44 @@ function Verify(props) {
 
         console.log(verificationCode)
 
-        if (otpInp.value.length > 0) {
+        if (otpInp.value.length >= 6) {
             try {
-                let response = await Axios.get('http://localhost:3001/api/auth/verify/check', { params: { otp: otpInp.value, verificationCode, uid } }, { withCredentials: true })
+                let response = await Axios.get('http://localhost:3001/api/auth/verify/check', { params: { otp: otpInp.value, verificationCode, uid } }, {
+                    headers: {
+                        'Access-Control-Allow-Origin': true,
+                    }
+                });
 
                 if (response.data.status) {
+                    otpInp.classList.replace('error-inp', 'noerror-inp');
+                    // Store user data in a cookie
+                    console.log(response.data.user)
+                    setCookie('userData', JSON.stringify(response.data.user), 1); // Cookie will expire in 1 day
+
                     // Handle success, maybe redirect
                     navigate(`/profile`);
                 } else {
-                    otpInp.classList.replace('error-inp', 'noerror-inp');
+                    otpInp.classList.replace('noerror-inp', 'error-inp');
                     // Handle error case
                     console.error('Verification failed');
                 }
             } catch (error) {
-                otpInp.classList.replace('error-inp', 'noerror-inp');
+                otpInp.classList.replace('noerror-inp', 'error-inp');
                 console.error('Verification failed', error);
             }
         } else {
             otpInp.classList.replace('noerror-inp', 'error-inp');
         }
     };
+
+    function validateCode(e) {
+        let otpInp = document.getElementById('otp');
+        if (otpInp.value < 6) {
+            otpInp.classList.replace('noerror-inp', 'error-inp');
+        } else {
+            otpInp.classList.replace('error-inp', 'noerror-inp');
+        }
+    }
 
     return (
         <div>
@@ -108,7 +147,7 @@ function Verify(props) {
                 <div className="inputs">
                     <form onSubmit={verify}>
                         <div className="input">
-                            <input type="number" onChange={verify} className="noerror-inp" name="otp" id="otp" placeholder="Verification Code" required autoComplete="off" />
+                            <input type="number" onChange={validateCode} className="noerror-inp" name="otp" id="otp" placeholder="Verification Code" required autoComplete="off" />
                         </div>
                         <div className="loginbtn">
                             <button>Verify</button>

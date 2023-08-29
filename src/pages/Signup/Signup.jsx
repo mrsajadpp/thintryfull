@@ -12,19 +12,39 @@ import logo from './logo.png';
 
 function Signup(props) {
 
+  function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires.toUTCString()}; path=/`;
+  }
+
+  function getUserDataFromCookie() {
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('userData='));
+
+    if (cookieValue) {
+      const valuePair = cookieValue.split('=');
+      if (valuePair.length === 2) {
+        return JSON.parse(decodeURIComponent(valuePair[1]));
+      }
+    }
+    return null;
+  }
+
+
   const navigate = useNavigate();
-  const [logged, setLogged] = useState(false);
 
   useEffect(() => {
-    Axios.get('http://192.168.1.2:3001/api/auth/check', { withCredentials: true })
-      .then((response) => {
-        setLogged(response.data.isLogged);
-        if (response.data.isLogged) {
-          navigate('/');
+    // Check if the user is already logged in using the cookie
+    const userData = getUserDataFromCookie();
+    if (userData) {
+        if (userData.status) {
+            navigate("/profile");
+            return; // No need to continue checking if already logged in
         }
-      })
-      .catch((err) => console.log(err));
-  }, [navigate]);
+    }
+}, [navigate]);
 
   function isValidEmail(email) {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -81,7 +101,11 @@ function Signup(props) {
     const formData = new FormData(form);
 
     try {
-      let response = await Axios.get('http://192.168.1.2:3001/api/auth/signup', { params: { firstname: formData.get('firstname'), lastname: formData.get('lastname'), username: formData.get('username'), password: formData.get('password'), email: formData.get('email') } }, { withCredentials: true })
+      let response = await Axios.get('http://192.168.1.2:3001/api/auth/signup', { params: { firstname: formData.get('firstname'), lastname: formData.get('lastname'), username: formData.get('username'), password: formData.get('password'), email: formData.get('email') } }, {
+        headers: {
+          'Access-Control-Allow-Origin': true,
+        }
+      })
 
       if (response.data.status) {
         // Handle success, maybe redirect
@@ -140,7 +164,11 @@ function Signup(props) {
                 if (newValue.length <= 0) {
                   username.classList.replace('noerror-inp', 'error-inp');
                 } else {
-                  Axios.get('http://192.168.1.2:3001/api/username/check', { params: { username: newValue } }, { withCredentials: true })
+                  Axios.get('http://192.168.1.2:3001/api/username/check', { params: { username: newValue } }, {
+                    headers: {
+                      'Access-Control-Allow-Origin': true,
+                    }
+                  })
                     .then((response) => {
                       if (response.data) {
                         if (response.data.usernameExist) {
