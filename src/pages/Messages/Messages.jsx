@@ -7,9 +7,10 @@ function Messages(props) {
   const [logged, setLogged] = useState(false);
 
   useEffect(() => {
-    Axios.get('http://192.168.1.2:3001/api/auth/check')
+    Axios.get('http://192.168.1.2:3001/api/auth/check', { withCredentials: true })
       .then((response) => {
         setLogged(response.data.isLogged);
+        console.log(response.data)
         if (!response.data.isLogged) {
           navigate('/auth/login'); // Redirect to /auth/login if not logged in
         }

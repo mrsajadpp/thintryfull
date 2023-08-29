@@ -16,7 +16,7 @@ function Signup(props) {
   const [logged, setLogged] = useState(false);
 
   useEffect(() => {
-    Axios.get('http://192.168.1.2:3001/api/auth/check')
+    Axios.get('http://192.168.1.2:3001/api/auth/check', { withCredentials: true })
       .then((response) => {
         setLogged(response.data.isLogged);
         if (response.data.isLogged) {
@@ -77,17 +77,17 @@ function Signup(props) {
     event.preventDefault();
 
     const form = event.target;
+    console.log(form)
     const formData = new FormData(form);
 
     try {
-      const response = await fetch('http://192.168.1.2:3001/api/auth/signup', {
-        method: 'POST',
-        body: formData,
-      });
+      let response = await Axios.get('http://192.168.1.2:3001/api/auth/signup', { params: { firstname: formData.get('firstname'), lastname: formData.get('lastname'), username: formData.get('username'), password: formData.get('password'), email: formData.get('email') } }, { withCredentials: true })
 
-      if (response.ok) {
+      if (response.data.status) {
         // Handle success, maybe redirect
-        navigate('/auth/login');
+        const verificationCode = response.data.user.encrypted_verification_code; // Assuming your response includes the verification code
+        console.log(verificationCode)
+        navigate(`/auth/verify?code=${verificationCode}&uid=${response.data.user._id}`);
       } else {
         // Handle error case
         console.error('Signup failed');
@@ -140,7 +140,7 @@ function Signup(props) {
                 if (newValue.length <= 0) {
                   username.classList.replace('noerror-inp', 'error-inp');
                 } else {
-                  Axios.get('http://192.168.1.2:3001/api/username/check', { params: { username: newValue } })
+                  Axios.get('http://192.168.1.2:3001/api/username/check', { params: { username: newValue } }, { withCredentials: true })
                     .then((response) => {
                       if (response.data) {
                         if (response.data.usernameExist) {
@@ -190,7 +190,7 @@ function Signup(props) {
               <span id="passwordError" className="error"></span>
             </div>
             <div className="loginbtn">
-              <button>SignUp</button>
+              <button type='submit'>SignUp</button>
             </div>
             <div className="textarea">
               <span>Already have an account? , <Link to="/auth/login">LogIn</Link>.</span>

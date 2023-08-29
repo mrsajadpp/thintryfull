@@ -9,6 +9,7 @@ import Profile from './pages/Profile/Profile';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import Notificastions from './pages/Notifications/Notificastions';
+import Verify from './pages/Verify/Verify';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/auth/login" element={<Login title='Login' />} />
         <Route path="/auth/signup" element={<Signup title='Signup' />} />
+        <Route path="/auth/verify" element={<Verify title='Verify Your Account' />} />
         <Route path="/" element={<Home />} />
         <Route path="/messages" element={<Messages title='Messages' />} />
         <Route path="/notifications" element={<Notificastions title='Notifications' />} />

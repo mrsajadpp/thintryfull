@@ -6,7 +6,7 @@ import {
     Link,
     useNavigate,
     useLocation
-  } from "react-router-dom";
+} from "react-router-dom";
 import './Login.css';
 import logo from './logo.png';
 
@@ -16,7 +16,7 @@ function Login(props) {
     const [logged, setLogged] = useState(false);
 
     useEffect(() => {
-        Axios.get('http://192.168.1.2:3001/api/auth/check')
+        Axios.get('http://192.168.1.2:3001/api/auth/check', { withCredentials: true })
             .then((response) => {
                 setLogged(response.data.isLogged);
                 if (response.data.isLogged) {
@@ -86,7 +86,7 @@ function Login(props) {
                                     if (newValue.length <= 0) {
                                         username.classList.replace('noerror-inp', 'error-inp');
                                     } else {
-                                        Axios.get('http://192.168.1.2:3001/api/username/check', { params: { username: newValue } })
+                                        Axios.get('http://192.168.1.2:3001/api/username/check', { params: { username: newValue } }, { withCredentials: true })
                                             .then((response) => {
                                                 if (response.data) {
                                                     if (response.data.usernameExist) {
