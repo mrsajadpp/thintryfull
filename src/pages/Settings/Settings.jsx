@@ -16,6 +16,8 @@ function Settings(props) {
         document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     }
 
+    let [userData,addData] = useState({})
+
     useEffect(() => {
         // Check if the user is already logged in using the cookie
         let userData = getUserDataFromCookie();
@@ -23,6 +25,7 @@ function Settings(props) {
             navigate("/auth/login");
             return; // No need to continue checking if already logged in
         }
+        addData(userData);
     }, [navigate]);
 
     function getUserDataFromCookie() {
@@ -68,10 +71,10 @@ function Settings(props) {
         var subject = "New bug report!";
 
         var postData = {
-            userId: "{{ user._id }}",
-            username: "{{ user.username }}",
-            email: "{{ user.email }}",
-            verified: "{{ user.verified }}"
+            userId: userData._id,
+            username: userData.username,
+            email: userData.email,
+            verified: userData.verified
         };
 
         var body = JSON.stringify(postData, null, 2); // Converts the postData object to a JSON string with formatting
@@ -84,10 +87,10 @@ function Settings(props) {
         var subject = "New Account delet request!";
 
         var postData = {
-            userId: "{{ user._id }}",
-            username: "{{ user.username }}",
-            email: "{{ user.email }}",
-            verified: "{{ user.verified }}"
+            userId: userData._id,
+            username: userData.username,
+            email: userData.email,
+            verified: userData.verified
         };
 
         var body = JSON.stringify(postData, null, 2); // Converts the postData object to a JSON string with formatting
@@ -130,13 +133,13 @@ function Settings(props) {
                 </div>
                 <div className="about-container">
                     <div className="static-area">
-                        <div className="created" onClick="composeEmail()">
+                        <div className="created" onClick={composeEmail}>
                             <box-icon name='bug' color='#6fbf7e'></box-icon>&nbsp;Report Bug
                         </div>
                         <div className="created" onClick={() => { delete_cookie('userData'); navigate('/auth/login'); }} style={{ color: 'orange' }}>
                             <box-icon name='log-out' color="orange"></box-icon>&nbsp;Logout
                         </div>
-                        <div className="created" onClick="composeDelEmail()" style={{ color: 'red' }}>
+                        <div className="created" onClick={composeDelEmail} style={{ color: 'red' }}>
                             <box-icon name='trash' color='red'></box-icon>&nbsp;Deletion Request
                         </div>
                     </div>

@@ -113,13 +113,15 @@ function Profile(props) {
     fetchPost();
   }, []);
 
+  console.log(userData.profile)
+
   return (
     <div className="profile">
       <div class="profile-container">
         <div className="profile-card">
           <div className="dp">
             <div className="dp-ring">
-              <img src={userData.rpofile} onerror="this.src='/img/demopic.png'; this.onerror=null;"
+              <img src={userData.profile ? userData.profile.startsWith('/') ? 'https://thintry.com' + userData.profile : userData.profile : userData.profile} onerror="this.src='/img/demopic.png'; this.onerror=null;"
                 alt={userData.firstname + ' ' + userData.lastname} />
             </div>
             <div className="name-tag">
@@ -142,12 +144,12 @@ function Profile(props) {
           <div className="list">
             <Link to={'/followers/' + userData.username} className="lleft">
               <button className="lleft">
-                <span>{userData.followersCount}</span>Followers
+                <span>{userData.followers ? userData.followers.length : userData.followers}</span>Followers
               </button>
             </Link>
             <Link to={'/followings/' + userData.username} className="lright">
               <button className="lright">
-                <span>{userData.followingsCount}</span>Following
+                <span>{userData.followings ? userData.followings.length : userData.followings}</span>Following
               </button>
             </Link>
           </div>
