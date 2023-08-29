@@ -1,0 +1,51 @@
+@font-face {
+    font-family: 'Thintry';
+    src: url('https://www.dropbox.com/scl/fi/3oh9we0thtfq9h7trvisd/thintry.ttf?rlkey=kb33d2o9uxhr6pc1dcs66v0o6&dl=1') format('truetype');
+}
+
+.loader {
+    z-index: 999;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #060002;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.text-container {
+    font-family: 'Thintry', sans-serif;
+    color: #6fbf7e;
+    font-size: 35px;
+    position: relative;
+    overflow: hidden;
+}
+
+.fade-effect {
+    position: absolute;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(111, 191, 126, 0) 0%, #060002 100%);
+    animation: moveFadeEffect 5s linear infinite;
+}
+
+@keyframes moveFadeEffect {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .loader {
+        height: 90vh;
+    }
+}

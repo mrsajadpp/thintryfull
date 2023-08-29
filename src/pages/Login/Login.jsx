@@ -80,13 +80,39 @@ function Login(props) {
         // Clean up by showing the header and footer when component unmounts
         return () => {
             if (header) {
-                header.style.display = 'block';
+                header.style.removeProperty('display');
             }
             if (footer) {
-                footer.style.display = 'block';
+                footer.style.removeProperty('display');
             }
         };
     }, []);
+
+    async function login(event) {
+        event.preventDefault();
+
+        const form = event.target;
+        console.log(form)
+        const formData = new FormData(form);
+
+        try {
+            let response = await Axios.get('http://192.168.1.2:3001/api/auth/login', { params: { username: formData.get('username'), password: formData.get('password') } }, {
+                headers: {
+                    'Access-Control-Allow-Origin': true,
+                }
+            })
+
+            if (response.data.status) {
+                setCookie('userData', JSON.stringify(response.data.user), 1); // Cookie will expire in 1 day
+                navigate(`/profile`);
+            } else {
+                // Handle error case
+                console.error('Login failed');
+            }
+        } catch (error) {
+            console.error('Loginfailed', error);
+        }
+    }
 
     return (
         <div>
@@ -95,7 +121,7 @@ function Login(props) {
                     <img src={logo} alt="" />
                 </div>
                 <div className="inputs">
-                    <form action="/auth/login" method="post">
+                    <form onSubmit={login}>
                         <div className="input">
                             <input type="text" className="noerror-inp" id="username" name="username" placeholder="Username" required
                                 autoComplete='off' onChange={(event) => {

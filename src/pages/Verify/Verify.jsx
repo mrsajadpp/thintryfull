@@ -79,10 +79,10 @@ function Verify(props) {
         // Clean up by showing the header and footer when component unmounts
         return () => {
             if (header) {
-                header.style.display = 'block';
+                header.style.removeProperty('display');
             }
             if (footer) {
-                footer.style.display = 'block';
+                footer.style.removeProperty('display');
             }
         };
     }, []);
@@ -101,7 +101,7 @@ function Verify(props) {
 
         if (otpInp.value.length >= 6) {
             try {
-                let response = await Axios.get('http://localhost:3001/api/auth/verify/check', { params: { otp: otpInp.value, verificationCode, uid } }, {
+                let response = await Axios.get('http://192.168.1.2:3001/api/auth/verify/check', { params: { otp: otpInp.value, verificationCode, uid } }, {
                     headers: {
                         'Access-Control-Allow-Origin': true,
                     }

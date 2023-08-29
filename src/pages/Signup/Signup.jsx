@@ -85,10 +85,10 @@ function Signup(props) {
     // Clean up by showing the header and footer when component unmounts
     return () => {
       if (header) {
-        header.style.display = 'block';
+        header.style.removeProperty('display');
       }
       if (footer) {
-        footer.style.display = 'block';
+        footer.style.removeProperty('display');
       }
     };
   }, []);
