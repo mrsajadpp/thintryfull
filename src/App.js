@@ -12,6 +12,7 @@ import Signup from './pages/Signup/Signup';
 import Notificastions from './pages/Notifications/Notificastions';
 import Verify from './pages/Verify/Verify';
 import Settings from './pages/Settings/Settings';
+import Editprofile from './pages/Editprofile/Editprofile';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/notifications" element={<Notificastions title='Notifications' />} />
           <Route path="/profile" element={<Profile title='Profile' />} />
           <Route path="/settings" element={<Settings title='Settings' />} />
+          <Route path="/profile/edit" element={<Editprofile title='Edit Profile' />} />
         </Routes>
         <Footer />
       </Suspense>
