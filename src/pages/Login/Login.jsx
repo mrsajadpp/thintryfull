@@ -96,7 +96,7 @@ function Login(props) {
         const formData = new FormData(form);
 
         try {
-            let response = await Axios.get('http://192.168.1.2:3001/api/auth/login', { params: { username: formData.get('username'), password: formData.get('password') } }, {
+            let response = await Axios.get('http://192.168.1.3:3001/api/auth/login', { params: { username: formData.get('username'), password: formData.get('password') } }, {
                 headers: {
                     'Access-Control-Allow-Origin': true,
                 }
@@ -132,7 +132,7 @@ function Login(props) {
                                     if (newValue.length <= 0) {
                                         username.classList.replace('noerror-inp', 'error-inp');
                                     } else {
-                                        Axios.get('http://192.168.1.2:3001/api/username/check', { params: { username: newValue } }, {
+                                        Axios.get('http://192.168.1.3:3001/api/username/check', { params: { username: newValue } }, {
                                             headers: {
                                                 'Access-Control-Allow-Origin': true,
                                             }

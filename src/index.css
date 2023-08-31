@@ -3,7 +3,7 @@ html {
 }
 
 @font-face {
-  font-family: 'Thintry'; 
+  font-family: 'Thintry';
   src: url('https://www.dropbox.com/scl/fi/3oh9we0thtfq9h7trvisd/thintry.ttf?rlkey=kb33d2o9uxhr6pc1dcs66v0o6&dl=1') format('truetype');
 }
 
@@ -22,6 +22,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
   padding: 0px;
   background-color: #000;
+}
+
+body {
+  user-select: none;
+}
+
+/* Add this if you want to preserve text selection in input and textarea */
+input,
+textarea {
+  user-select: auto;
 }
 
 code {

@@ -31,8 +31,7 @@
 }
 
 .profile-container .profile-card .dp .dp-ring img {
-    width: 100% !important;
-    height: 100% !important;
+    width: 100%;
 }
 
 .profile-container .profile-card .name-tag {

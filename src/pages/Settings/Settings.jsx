@@ -126,7 +126,9 @@ function Settings(props) {
         <div>
             <div className="settings-container">
                 <div className="searchdiv">
-                    <button id="navbackbtn" onClick={() => { navigate('/profile') }} type="button">
+                    <button id="navbackbtn" onClick={() => {
+                        navigate(-1)
+                    }} type="button">
                         <box-icon type='solid' name='chevron-left' color="#6fbf7e"></box-icon>
                     </button>
                     <div></div>

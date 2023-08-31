@@ -2,6 +2,8 @@ import { React, useEffect, useState, Suspense, lazy } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 import './Profile.css'
+import About from '../../components/About/About';
+import Tag from '../../components/Tag/Tag';
 
 function Profile(props) {
   const navigate = useNavigate();
@@ -55,20 +57,6 @@ function Profile(props) {
   }, [props.title, props.description, props.keywords]);
   const location = useLocation();
 
-  const isPageActive = (path) => {
-    return location.pathname === path;
-  };
-
-  // const [username, setUsername] = useState('');
-
-  // useEffect(() => {
-  //   const url = window.location.href;
-  //   const parts = url.split('/');
-  //   const usernameFromUrl = parts[parts.length - 1]; // Assuming username is the last part of the URL
-
-  //   setUsername(usernameFromUrl);
-  // }, []);
-
   let [userData, setData] = useState({});
   let [posts, setPost] = useState([]);
 
@@ -77,7 +65,7 @@ function Profile(props) {
       try {
         const userData = await getUserDataFromCookie();
         setData(userData)
-        let response = await Axios.get('http://192.168.1.2:3001/api/fetch/user', { params: { username: userData.username } }, {
+        let response = await Axios.get('http://192.168.1.3:3001/api/fetch/user', { params: { username: userData.username } }, {
           headers: {
             'Access-Control-Allow-Origin': true,
           }
@@ -97,7 +85,7 @@ function Profile(props) {
     async function fetchPost() {
       try {
         const userData = await getUserDataFromCookie();
-        let response = await Axios.get('http://192.168.1.2:3001/api/fetch/user/posts', { params: { uid: userData._id.toString() } }, {
+        let response = await Axios.get('http://192.168.1.3:3001/api/fetch/user/posts', { params: { uid: userData._id.toString() } }, {
           headers: {
             'Access-Control-Allow-Origin': true,
           }
@@ -113,15 +101,45 @@ function Profile(props) {
     fetchPost();
   }, []);
 
-  console.log(userData.profile)
+  const copyUrl = async (url) => {
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch (error) {
+      // Fallback for browsers that don't support Clipboard API
+      const tempTextArea = document.createElement('textarea');
+      tempTextArea.value = url;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempTextArea);
+    }
+  };
+
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp); // Convert to milliseconds
+    // Now you can use the toDateString method
+    const formattedTime = date.toDateString();
+    return formattedTime;
+  };
+
+  const isPageActive = (path) => {
+    return location.pathname === path;
+  };
+
+  function pageType() {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const type = urlParams.get('type');
+    return type;
+  }
 
   return (
     <div className="profile">
-      <div class="profile-container">
+      <div className="profile-container">
         <div className="profile-card">
           <div className="dp">
             <div className="dp-ring">
-              <img src={userData.profile ? userData.profile.startsWith('/') ? 'https://thintry.com' + userData.profile : userData.profile : userData.profile} onerror="this.src='/img/demopic.png'; this.onerror=null;"
+              <img src={userData.profile ? userData.profile.startsWith('/') ? 'https://thintry.com' + userData.profile : userData.profile : userData.profile} onError={(event) => { event.target.src = 'https://thintry.com/img/demopic.png'; event.target.onError = null; }}
                 alt={userData.firstname + ' ' + userData.lastname} />
             </div>
             <div className="name-tag">
@@ -144,12 +162,12 @@ function Profile(props) {
           <div className="list">
             <Link to={'/followers/' + userData.username} className="lleft">
               <button className="lleft">
-                <span>{userData.followers ? userData.followers.length : userData.followers}</span>Followers
+                <span>{userData.followers ? userData.followers.length : ''}</span>Followers
               </button>
             </Link>
             <Link to={'/followings/' + userData.username} className="lright">
               <button className="lright">
-                <span>{userData.followings ? userData.followings.length : userData.followings}</span>Following
+                <span>{userData.followings ? userData.followings.length : ''}</span>Following
               </button>
             </Link>
           </div>
@@ -161,6 +179,29 @@ function Profile(props) {
           </div>
         </div>
       </div>
+
+      <div className="profile-content">
+        <div className="tools">
+          <div className="tool">
+            <Link to="/profile" id="a" className={pageType() == 'about' ? '' : 'active'}><button><box-icon type='solid' name='quote-single-left'
+              color="#6fbf7e"></box-icon>&nbsp;Posts</button>
+            </Link>
+          </div>
+          <div className="tool">
+            <Link to="/profile?type=about" className={pageType() == 'about' ? 'active' : ''} id="d">
+              <button id="about"><box-icon name='info-circle' color="#6fbf7e"></box-icon>&nbsp;About</button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {pageType() !== 'about' && (
+        <Tag userData={userData}/>
+      )}
+
+      {pageType() == 'about' && (
+        <About userData={userData}/>
+      )}
     </div>
   );
 }

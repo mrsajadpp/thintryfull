@@ -24,6 +24,17 @@
     overflow: hidden;
 }
 
+.thintry-image {
+    width: 150px;
+    /* Adjust the width as needed */
+    height: auto;
+    /* Maintain aspect ratio */
+    vertical-align: middle;
+    margin-right: 10px;
+    /* Adjust spacing as needed */
+}
+
+
 .fade-effect {
     position: absolute;
     left: -100%;
