@@ -196,7 +196,9 @@ function Profile(props) {
       </div>
 
       {pageType() !== 'about' && (
-        <Tag userData={userData}/>
+        <div id="page">
+          <Tag userData={userData}/>
+        </div>
       )}
 
       {pageType() == 'about' && (

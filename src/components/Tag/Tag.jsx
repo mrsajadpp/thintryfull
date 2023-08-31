@@ -3,10 +3,29 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 
 function Tag(props) {
-  console.log(props.userData)
   const navigate = useNavigate();
-  const [userData,setData] = useState([]);
+  const [userData, setData] = useState([]);
   const [tags, setTags] = useState([]);
+  function parseContent(content) {
+    const hashtagRegex = /#[A-Za-z0-9_-]+/g;
+    const urlRegex = /(?<!href=')(?<!src=')(https?:\/\/[^\s]+)/g; // Updated regex to exclude URLs within img src attribute
+    const mentionRegex = /@([A-Za-z0-9_.-]+)/g;
+
+    const parsedUrlContent = content.replace(urlRegex, (match) => {
+      return `<a href="${match}" style="color: lightblue !important;" target="_blank">${match}</a>`;
+    });
+
+    const parsedContentWithMentions = parsedUrlContent.replace(mentionRegex, (match, mention) => {
+      return `<a href="/user/${mention}" style="color: lightblue !important;">${match}</a>`;
+    });
+
+    const parsedContent = parsedContentWithMentions.replace(hashtagRegex, (match) => {
+      const hashtag = match.substring(1);
+      return `<a href="/search?q=${hashtag}" style="color: lightblue !important;">${match}</a>`;
+    });
+
+    return parsedContent;
+  }
   useEffect(() => {
     async function fetchTags(uid) {
       try {
@@ -78,7 +97,7 @@ function Tag(props) {
   return (
     <div>
       {tags.map(tag => (
-        <div id={tag._id} className="tweet">
+        <div id={tag._id} key={tag._id} className="tweet">
           <div className="tweet-container pt pb pr pl">
             {/* User */}
             <div className="user pr">
@@ -116,13 +135,13 @@ function Tag(props) {
 
             {/* Tweet content */}
             <div className="tweet-content pt">
-              <Link className='link-style' to={`/post/${tag._id}`}>{tag.content}</Link>
+              <Link id='link-style' to={`/post/${tag._id}`}>{parseContent(tag.content)}</Link>
             </div>
 
             {/* Date and location */}
             <div className="date pt pb">{formatTime(tag.timestamp)} • from {' '}
               <Link to={`https://www.google.com/maps/search/${encodeURIComponent(props.userData ? props.userData.created.location.region : '')}`}
-                title="Search on Google Maps">{props.userData ? props.userData.created.location.region : ''},
+                title="Search on Google Maps">{props.userData ? props.userData.created.location.region : ''},{' '}
                 {props.userData ? props.userData.created.location.country : ''}</Link>
             </div>
 
@@ -150,8 +169,8 @@ function Tag(props) {
           {/* Icons */}
           <div className="icons">
             <div className="ico">
-              <box-icon name='message-square-add' onClick={() => { navigate(`/tag/${tag._id}`) }} color="#fff" className="img" />
-              <div className="number">{formatNumber(tag.reply ? tag.reply.length : '')}</div>
+              <box-icon name='message-square-dots' type='solid' onClick={() => { navigate(`/tag/${tag._id}`) }} color="#fff" className="img" />
+              <div className="number">{formatNumber(tag.replies ? tag.replies.length : '')}</div>
             </div>
             <div className="ico">
               {tag.upvote.includes(props.userData._id) ? (
@@ -170,11 +189,11 @@ function Tag(props) {
             <div className="ico">
               {tag.downvote.includes(props.userData._id) ? (
                 <span id={`dow-${tag._id}`}>
-                  <box-icon name='down-arrow' type='solid' color="#6fbf7e" className="img" />
+                  <box-icon type='solid' name='down-arrow' color="#6fbf7e" className="img" />
                 </span>
               ) : (
                 <span id={`dow-${tag._id}`}>
-                  <box-icon name='down-arrow' type='solid' color="#fff" className="img" />
+                  <box-icon type='solid' name='down-arrow' color="#fff" className="img" />
                 </span>
               )}
               <div className="number">
@@ -189,7 +208,7 @@ function Tag(props) {
             </div>
           </div>
         </div>))}
-        <div style={{ width: '100%', height: '60px' }}></div>
+      <div style={{ width: '100%', height: '60px' }}></div>
     </div>
   )
 }
