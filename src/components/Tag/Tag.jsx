@@ -116,7 +116,7 @@ function Tag(props) {
 
             {/* Tweet content */}
             <div className="tweet-content pt">
-              <Link to={`/post/${tag._id}`}>{tag.content}</Link>
+              <Link className='link-style' to={`/post/${tag._id}`}>{tag.content}</Link>
             </div>
 
             {/* Date and location */}
