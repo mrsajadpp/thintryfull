@@ -100,7 +100,7 @@ function Verify(props) {
 
         if (otpInp.value.length >= 6) {
             try {
-                let response = await Axios.get('http://192.168.1.3:3001/api/auth/verify/check', { params: { otp: otpInp.value, verificationCode, uid } }, {
+                let response = await Axios.get('http://192.168.66.248:3001/api/auth/verify/check', { params: { otp: otpInp.value, verificationCode, uid } }, {
                     headers: {
                         'Access-Control-Allow-Origin': true,
                     }

@@ -1,0 +1,45 @@
+.audio-player {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    background-color: #000;
+    height: 50px;
+}
+
+.audio-controls {
+    display: flex;
+    gap: 10px;
+    width: 50px;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.audio-controls button {
+    width: 90%;
+    height: 90%;
+    border: none;
+    border-radius: 85px;
+    background-color: #6fbf7e;
+    font-size: 23px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-bar {
+    width: 90%;
+    height: 10px;
+    border-radius: 8px;
+    background-color: #333;
+    position: relative;
+}
+
+.progress {
+    height: 100%;
+    width: 0;
+    border-radius: 8px;
+    background-color: #6fbf7e;
+}

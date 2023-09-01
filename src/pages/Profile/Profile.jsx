@@ -65,7 +65,7 @@ function Profile(props) {
       try {
         const userData = await getUserDataFromCookie();
         setData(userData)
-        let response = await Axios.get('http://192.168.1.3:3001/api/fetch/user', { params: { username: userData.username } }, {
+        let response = await Axios.get('http://192.168.66.248:3001/api/fetch/user', { params: { username: userData.username } }, {
           headers: {
             'Access-Control-Allow-Origin': true,
           }
@@ -85,7 +85,7 @@ function Profile(props) {
     async function fetchPost() {
       try {
         const userData = await getUserDataFromCookie();
-        let response = await Axios.get('http://192.168.1.3:3001/api/fetch/user/posts', { params: { uid: userData._id.toString() } }, {
+        let response = await Axios.get('http://192.168.66.248:3001/api/fetch/user/posts', { params: { uid: userData._id.toString() } }, {
           headers: {
             'Access-Control-Allow-Origin': true,
           }
@@ -139,35 +139,57 @@ function Profile(props) {
         <div className="profile-card">
           <div className="dp">
             <div className="dp-ring">
-              <img src={userData.profile ? userData.profile.startsWith('/') ? 'https://thintry.com' + userData.profile : userData.profile : userData.profile} onError={(event) => { event.target.src = 'https://thintry.com/img/demopic.png'; event.target.onError = null; }}
-                alt={userData.firstname + ' ' + userData.lastname} />
+              {userData.profile ? (
+                <img src={userData.profile.startsWith('/') ? 'https://thintry.com' + userData.profile : userData.profile} alt={userData.firstname + ' ' + userData.lastname} onError={(event) => { event.target.src = 'https://thintry.com/img/demopic.png'; event.target.onError = null; }} />
+              ) : (
+                <img src="https://thintry.com/img/demopic.png" alt="Default Profile" />
+              )}
             </div>
             <div className="name-tag">
-              <div className="name">{userData.firstname} {userData.lastname}
+              <div className="name">
+                {userData.firstname && userData.lastname ? (
+                  <>
+                    {userData.firstname} {userData.lastname}
+                  </>
+                ) : (
+                  <span>Loading...</span>
+                )}
                 {userData.official ? (
-                  <box-icon type='solid' name='badge-check'
-                    color="#6fbf7e"></box-icon>
+                  <box-icon type='solid' name='badge-check' color="#6fbf7e"></box-icon>
                 ) : (
                   userData.verified ? (
-                    <box-icon type='solid' name='badge-check'
-                      color="#fff"></box-icon>
+                    <box-icon type='solid' name='badge-check' color="#fff"></box-icon>
                   ) : (
                     <p></p>
                   )
                 )}
               </div>
-              <div className="username">@{userData.username}</div>
+              <div className="username">
+                {userData.username ? `@${userData.username}` : 'Loading...'}
+              </div>
             </div>
           </div>
           <div className="list">
             <Link to={'/followers/' + userData.username} className="lleft">
               <button className="lleft">
-                <span>{userData.followers ? userData.followers.length : ''}</span>Followers
+                {userData.followers ? (
+                  <>
+                    <span>{userData.followers.length}</span> Followers
+                  </>
+                ) : (
+                  '0'
+                )}
               </button>
             </Link>
             <Link to={'/followings/' + userData.username} className="lright">
               <button className="lright">
-                <span>{userData.followings ? userData.followings.length : ''}</span>Following
+                {userData.followings ? (
+                  <>
+                    <span>{userData.followings.length}</span> Following
+                  </>
+                ) : (
+                  '0'
+                )}
               </button>
             </Link>
           </div>
@@ -195,15 +217,13 @@ function Profile(props) {
         </div>
       </div>
 
-      {pageType() !== 'about' && (
-        <div id="page">
-          <Tag userData={userData}/>
-        </div>
-      )}
-
-      {pageType() == 'about' && (
-        <About userData={userData}/>
-      )}
+      <div id="page">
+        {pageType() !== 'about' ? (
+          <Tag userData={userData} />
+        ) : (
+          <About userData={userData} />
+        )}
+      </div>
     </div>
   );
 }

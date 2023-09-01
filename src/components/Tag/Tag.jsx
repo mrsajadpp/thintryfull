@@ -1,6 +1,7 @@
 import { React, useEffect, useState, Suspense, lazy } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
+import Audioplayer from '../Audioplayer/Audioplayer';
 
 function Tag(props) {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ function Tag(props) {
   useEffect(() => {
     async function fetchTags(uid) {
       try {
-        let response = await Axios.get('http://192.168.1.3:3001/api/fetch/user/tags', { params: { uid } }, {
+        let response = await Axios.get('http://192.168.66.248:3001/api/fetch/user/tags', { params: { uid } }, {
           headers: {
             'Access-Control-Allow-Origin': true,
           }
@@ -135,7 +136,7 @@ function Tag(props) {
 
             {/* Tweet content */}
             <div className="tweet-content pt">
-              <Link id='link-style' to={`/post/${tag._id}`}>{parseContent(tag.content)}</Link>
+            {tag.audio ? (<Audioplayer url={tag.audio.src} />) : (<Link id='link-style' to={`/post/${tag._id}`} dangerouslySetInnerHTML={{ __html: parseContent(tag.content) }}></Link>)}
             </div>
 
             {/* Date and location */}
