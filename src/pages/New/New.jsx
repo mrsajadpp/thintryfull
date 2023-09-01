@@ -84,7 +84,7 @@ function New(props) {
             try {
                 const userData = await getUserDataFromCookie();
                 setData(userData)
-                let response = await Axios.get('http://api.thintry.com/api/fetch/user', { params: { username: userData.username } }, {
+                let response = await Axios.get('https://api.thintry.com/api/fetch/user', { params: { username: userData.username } }, {
                     headers: {
                         'Access-Control-Allow-Origin': true,
                     }
@@ -129,7 +129,7 @@ function New(props) {
             content.classList.replace('noerror-inp', 'error-inp');
         } else {
             Axios.get(
-                'http://api.thintry.com/api/tag/new',
+                'https://api.thintry.com/api/tag/new',
                 { params: { _id: userData._id, content: content.value } },
                 {
                     headers: {

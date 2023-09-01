@@ -38,7 +38,7 @@ function About(props) {
                         <box-icon name='current-location' color='#6fbf7e' />&nbsp;
                         {props.userData.created ? `${props.userData.created.location.region}, ${props.userData.created.location.country}` : ''}
                     </div>
-                    <div className="location" onClick={() => copyUrl('http://api.thintry.com/user/' + props.userData.username)}>
+                    <div className="location" onClick={() => copyUrl('https://api.thintry.com/user/' + props.userData.username)}>
                         <box-icon name='link' color='orange' />&nbsp;Copy Url
                     </div>
                 </div>

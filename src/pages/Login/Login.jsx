@@ -96,7 +96,7 @@ function Login(props) {
         const formData = new FormData(form);
 
         try {
-            let response = await Axios.get('http://api.thintry.com/api/auth/login', { params: { username: formData.get('username'), password: formData.get('password') } }, {
+            let response = await Axios.get('https://api.thintry.com/api/auth/login', { params: { username: formData.get('username'), password: formData.get('password') } }, {
                 headers: {
                     'Access-Control-Allow-Origin': true,
                 }
@@ -132,7 +132,7 @@ function Login(props) {
                                     if (newValue.length <= 0) {
                                         username.classList.replace('noerror-inp', 'error-inp');
                                     } else {
-                                        Axios.get('http://api.thintry.com/api/username/check', { params: { username: newValue } }, {
+                                        Axios.get('https://api.thintry.com/api/username/check', { params: { username: newValue } }, {
                                             headers: {
                                                 'Access-Control-Allow-Origin': true,
                                             }

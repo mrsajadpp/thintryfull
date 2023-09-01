@@ -28,7 +28,7 @@ function Home(props) {
     useEffect(() => {
         async function fetchAllTags() {
             try {
-                const response = await Axios.post('http://api.thintry.com/api/fetch/user/tags/all', {
+                const response = await Axios.post('https://api.thintry.com/api/fetch/user/tags/all', {
                     headers: {
                         'Access-Control-Allow-Origin': true,
                     },
@@ -157,7 +157,7 @@ function Home(props) {
     const handleAlertAction = () => {
         async function delTag() {
             try {
-                let response = await Axios.get('http://api.thintry.com/api/tag/delete', { params: { uid: userData._id, tagId: alertData.tagId } }, {
+                let response = await Axios.get('https://api.thintry.com/api/tag/delete', { params: { uid: userData._id, tagId: alertData.tagId } }, {
                     headers: {
                         'Access-Control-Allow-Origin': true,
                     }
@@ -179,7 +179,7 @@ function Home(props) {
         try {
             if (userData.status) {
                 const response = await Axios.post(
-                    'http://api.thintry.com/api/tag/upvote',
+                    'https://api.thintry.com/api/tag/upvote',
                     { tagId, uid: userData._id },
                     {
                         headers: {
@@ -203,7 +203,7 @@ function Home(props) {
         try {
             if (userData.status) {
                 const response = await Axios.post(
-                    'http://api.thintry.com/api/tag/downvote',
+                    'https://api.thintry.com/api/tag/downvote',
                     { tagId, uid: userData._id },
                     {
                         headers: {
@@ -233,9 +233,9 @@ function Home(props) {
                             <div className="userl" onClick={() => { navigate('/user/' + tag.user.username) }}>
                                 <div className="profile">
                                     <img
-                                        src={tag.user && tag.user.profile ? (tag.user.profile.startsWith('/') ? 'https://thintry.com' + tag.user.profile : tag.user.profile) : 'http://api.thintry.com/img/demopic.png'}
+                                        src={tag.user && tag.user.profile ? (tag.user.profile.startsWith('/') ? 'https://thintry.com' + tag.user.profile : tag.user.profile) : 'https://api.thintry.com/img/demopic.png'}
                                         onError={(event) => {
-                                            event.target.src = 'http://api.thintry.com/img/demopic.png';
+                                            event.target.src = 'https://api.thintry.com/img/demopic.png';
                                             event.target.onError = null;
                                         }}
                                     />
@@ -359,7 +359,7 @@ function Home(props) {
                             userData && userData._id == tag.user._id ? (
                                 <div className="ico">
                                     <box-icon type='solid' name='trash' color="red" className="img" onClick={() => {
-                                        displayAlert('Do you really want to delete this tag?', 'http://api.thintry.com/api/tag/delete', 'Yes', 'No', `${tag._id}`);
+                                        displayAlert('Do you really want to delete this tag?', 'https://api.thintry.com/api/tag/delete', 'Yes', 'No', `${tag._id}`);
                                     }} />
                                 </div>
                             ) : (
@@ -369,7 +369,7 @@ function Home(props) {
                             ''
                         )}
                         <div className="ico">
-                            <box-icon name='link' color="#fff" className="img" onClick={() => copyUrl(`http://api.thintry.com/tag/${tag._id}`)} />
+                            <box-icon name='link' color="#fff" className="img" onClick={() => copyUrl(`https://api.thintry.com/tag/${tag._id}`)} />
                         </div>
                     </div>
                 </div>))}
