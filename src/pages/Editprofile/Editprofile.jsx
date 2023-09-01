@@ -135,9 +135,7 @@ function Editprofile(props) {
 
     async function handleSubmit(event) {
         event.preventDefault();
-        console.log('submitted');
         const form = event.target;
-        console.log(form)
         const formData = new FormData(form);
 
         try {

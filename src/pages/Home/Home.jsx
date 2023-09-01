@@ -35,7 +35,6 @@ function Home(props) {
                 });
 
                 if (response.data.status) {
-                    console.log(response.data.tags)
                     setTags(response.data.tags);
                 } else {
                     setTags('')
@@ -46,8 +45,6 @@ function Home(props) {
         }
         fetchAllTags();
     }, [props,tags]);
-
-    console.log(tags)
 
     useEffect(() => {
         let userData = getUserDataFromCookie();

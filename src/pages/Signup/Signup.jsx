@@ -97,7 +97,6 @@ function Signup(props) {
     event.preventDefault();
 
     const form = event.target;
-    console.log(form)
     const formData = new FormData(form);
 
     try {
@@ -110,7 +109,6 @@ function Signup(props) {
       if (response.data.status) {
         // Handle success, maybe redirect
         const verificationCode = response.data.user.encrypted_verification_code; // Assuming your response includes the verification code
-        console.log(verificationCode)
         navigate(`/auth/verify?code=${verificationCode}&uid=${response.data.user._id}`);
       } else {
         // Handle error case

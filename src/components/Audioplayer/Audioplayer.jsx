@@ -20,8 +20,6 @@ function Audioplayer(props) {
 
     let changeProgress =  async(event) => {
             if (isPlaying) {
-                console.log(event.target.currentTime)
-                console.log(event.target.duration)
                 setAudioplayer(event.target);
                 setDuration(event.target.duration);
                 let progressPercent = await (event.target.currentTime / event.target.duration) * 90;

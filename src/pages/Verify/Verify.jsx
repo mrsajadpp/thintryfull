@@ -88,15 +88,12 @@ function Verify(props) {
 
     const verify = async (event) => {
         event.preventDefault();
-        console.log('otp')
 
         let otpInp = document.getElementById('otp');
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const verificationCode = urlParams.get('code');
         const uid = urlParams.get('uid');
-
-        console.log(verificationCode)
 
         if (otpInp.value.length >= 6) {
             try {
@@ -109,7 +106,6 @@ function Verify(props) {
                 if (response.data.status) {
                     otpInp.classList.replace('error-inp', 'noerror-inp');
                     // Store user data in a cookie
-                    console.log(response.data.user)
                     setCookie('userData', JSON.stringify(response.data.user), 1); // Cookie will expire in 1 day
 
                     // Handle success, maybe redirect

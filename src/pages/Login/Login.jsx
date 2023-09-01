@@ -92,7 +92,6 @@ function Login(props) {
         event.preventDefault();
 
         const form = event.target;
-        console.log(form)
         const formData = new FormData(form);
 
         try {
