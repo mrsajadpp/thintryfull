@@ -170,7 +170,7 @@ function Tag(props) {
           {/* Icons */}
           <div className="icons">
             <div className="ico">
-              <box-icon name='message-square-dots' type='solid' onClick={() => { navigate(`/tag/${tag._id}`) }} color="#fff" className="img" />
+              <box-icon type='solid' name='message-square-dots' onClick={() => { navigate(`/tag/${tag._id}`) }} color="#fff" className="img" />
               <div className="number">{formatNumber(tag.replies ? tag.replies.length : '')}</div>
             </div>
             <div className="ico">

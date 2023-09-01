@@ -228,7 +228,7 @@ function Home(props) {
                     {/* Icons */}
                     <div className="icons">
                         <div className="ico">
-                            <box-icon name='message-square-dots' type='solid' onClick={() => { navigate(`/tag/${tag._id}`) }} color="#fff" className="img" />
+                            <box-icon type='solid' name='message-square-dots' onClick={() => { navigate(`/tag/${tag._id}`) }} color="#fff" className="img" />
                             <div className="number">{formatNumber(tag.replies ? tag.replies.length : '')}</div>
                         </div>
                         <div className="ico">
@@ -256,16 +256,16 @@ function Home(props) {
                             {tag.user && tag.user._id ? (
                                 tag.downvote.includes(tag.user._id) ? (
                                     <span id={`dow-${tag._id}`}>
-                                        <box-icon name='down-arrow' type='solid' color="#6fbf7e" className="img" />
+                                        <box-icon type='solid' name='down-arrow' color="#6fbf7e" className="img" />
                                     </span>
                                 ) : (
                                     <span id={`dow-${tag._id}`}>
-                                        <box-icon name='down-arrow' type='solid' color="#fff" className="img" />
+                                        <box-icon type='solid' name='down-arrow' color="#fff" className="img" />
                                     </span>
                                 )
                             ) : (
                                 <span >
-                                    <box-icon name='down-arrow' type='solid' color="#fff" className="img" />
+                                    <box-icon type='solid' name='down-arrow'  color="#fff" className="img" />
                                 </span>
                             )}
                             <div className="number">
