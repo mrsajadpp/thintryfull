@@ -101,7 +101,7 @@ function Signup(props) {
     const formData = new FormData(form);
 
     try {
-      let response = await Axios.get('http://192.168.66.248:3001/api/auth/signup', { params: { firstname: formData.get('firstname'), lastname: formData.get('lastname'), username: formData.get('username'), password: formData.get('password'), email: formData.get('email') } }, {
+      let response = await Axios.get('http://192.168.1.4:3001/api/auth/signup', { params: { firstname: formData.get('firstname'), lastname: formData.get('lastname'), username: formData.get('username'), password: formData.get('password'), email: formData.get('email') } }, {
         headers: {
           'Access-Control-Allow-Origin': true,
         }
@@ -164,7 +164,7 @@ function Signup(props) {
                 if (newValue.length <= 0) {
                   username.classList.replace('noerror-inp', 'error-inp');
                 } else {
-                  Axios.get('http://192.168.66.248:3001/api/username/check', { params: { username: newValue } }, {
+                  Axios.get('http://192.168.1.4:3001/api/username/check', { params: { username: newValue } }, {
                     headers: {
                       'Access-Control-Allow-Origin': true,
                     }

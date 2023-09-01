@@ -29,7 +29,7 @@ function App() {
       {loading ? (
         <Loading />
       ) : (
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={'Loading'}>
           <Header />
           <Routes>
             <Route path="/auth/login" element={<Login title='Login' />} />
@@ -44,7 +44,8 @@ function App() {
             <Route path="/tag/new" element={<New title='New Tag' />} />
           </Routes>
           <Footer />
-        </Suspense>)}
+        </Suspense>
+        )}
     </div>
   );
 }

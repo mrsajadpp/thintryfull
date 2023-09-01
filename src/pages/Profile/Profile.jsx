@@ -65,7 +65,7 @@ function Profile(props) {
       try {
         const userData = await getUserDataFromCookie();
         setData(userData)
-        let response = await Axios.get('http://192.168.66.248:3001/api/fetch/user', { params: { username: userData.username } }, {
+        let response = await Axios.get('http://192.168.1.4:3001/api/fetch/user', { params: { username: userData.username } }, {
           headers: {
             'Access-Control-Allow-Origin': true,
           }
@@ -85,7 +85,7 @@ function Profile(props) {
     async function fetchPost() {
       try {
         const userData = await getUserDataFromCookie();
-        let response = await Axios.get('http://192.168.66.248:3001/api/fetch/user/posts', { params: { uid: userData._id.toString() } }, {
+        let response = await Axios.get('http://192.168.1.4:3001/api/fetch/user/posts', { params: { uid: userData._id.toString() } }, {
           headers: {
             'Access-Control-Allow-Origin': true,
           }

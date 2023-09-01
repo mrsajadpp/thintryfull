@@ -141,7 +141,7 @@ function Editprofile(props) {
         const formData = new FormData(form);
 
         try {
-            let response = await Axios.get('http://192.168.66.248:3001/api/user/update', { params: { firstname: formData.get('firstname'), lastname: formData.get('lastname'), username: formData.get('username'), about: formData.get('about'), _id: userData._id } }, {
+            let response = await Axios.get('http://192.168.1.4:3001/api/user/update', { params: { firstname: formData.get('firstname'), lastname: formData.get('lastname'), username: formData.get('username'), about: formData.get('about'), _id: userData._id } }, {
                 headers: {
                     'Access-Control-Allow-Origin': true,
                 }
@@ -172,7 +172,7 @@ function Editprofile(props) {
             username.classList.replace('noerror-inp', 'error-inp');
         } else {
             Axios.get(
-                'http://192.168.66.248:3001/api/username/check',
+                'http://192.168.1.4:3001/api/username/check',
                 { params: { username: newValue } },
                 {
                     headers: {

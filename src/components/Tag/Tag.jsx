@@ -2,11 +2,37 @@ import { React, useEffect, useState, Suspense, lazy } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 import Audioplayer from '../Audioplayer/Audioplayer';
+import Alert from '../Alert/Alert';
 
 function Tag(props) {
   const navigate = useNavigate();
   const [userData, setData] = useState([]);
   const [tags, setTags] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertData, setAlert] = useState({});
+  const [upTag, setUpTag] = useState([]);
+
+  function getUserDataFromCookie() {
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('userData='));
+
+    if (cookieValue) {
+      const valuePair = cookieValue.split('=');
+      if (valuePair.length === 2) {
+        return JSON.parse(decodeURIComponent(valuePair[1]));
+      }
+    }
+    return null;
+  }
+
+  useEffect(() => {
+    let userData = getUserDataFromCookie();
+    if (userData) {
+      setData(userData);
+    }
+  }, []);
+
   function parseContent(content) {
     const hashtagRegex = /#[A-Za-z0-9_-]+/g;
     const urlRegex = /(?<!href=')(?<!src=')(https?:\/\/[^\s]+)/g; // Updated regex to exclude URLs within img src attribute
@@ -30,7 +56,7 @@ function Tag(props) {
   useEffect(() => {
     async function fetchTags(uid) {
       try {
-        let response = await Axios.get('http://192.168.66.248:3001/api/fetch/user/tags', { params: { uid } }, {
+        let response = await Axios.get('http://192.168.1.4:3001/api/fetch/user/tags', { params: { uid } }, {
           headers: {
             'Access-Control-Allow-Origin': true,
           }
@@ -44,7 +70,7 @@ function Tag(props) {
       }
     }
     fetchTags(props.userData._id);
-  }, [props.userData]);
+  }, [props.userData, upTag]);
 
   const copyUrl = async (url) => {
     try {
@@ -95,6 +121,86 @@ function Tag(props) {
     window.location.href = mailtoLink;
   }
 
+  const displayAlert = (message, api, leftButtonText, rightButtonText, tagId) => {
+    setAlert({
+      message,
+      api,
+      leftButtonText,
+      rightButtonText,
+      tagId
+    });
+    setShowAlert(true);
+  };
+
+  const handleAlertAction = () => {
+    async function delTag() {
+      try {
+        let response = await Axios.get('http://192.168.1.4:3001/api/tag/delete', { params: { uid: userData._id, tagId: alertData.tagId } }, {
+          headers: {
+            'Access-Control-Allow-Origin': true,
+          }
+        });
+
+        if (response.data.status) {
+          const updatedTags = await tags.filter(tag => tag._id.toString() !== alertData.tagId.toString());
+          setTags(updatedTags);
+          setShowAlert(false)
+        }
+      } catch (error) {
+        console.error('Fetching failed', error);
+      }
+    }
+    delTag()
+  }
+
+  const handleUpvote = async (tagId) => {
+    try {
+      if (userData.status) {
+        const response = await Axios.post(
+          'http://192.168.1.4:3001/api/tag/upvote',
+          { tagId, uid: userData._id },
+          {
+            headers: {
+              'Access-Control-Allow-Origin': true,
+            },
+          }
+        );
+
+        if (response.data.status) {
+          setUpTag(Math.floor(Math.random() * (1 - 9)) + 1)
+        }
+      } else {
+        navigate('/auth/login')
+      }
+    } catch (error) {
+      console.error('Upvote failed', error);
+    }
+  };
+
+  const handleDownvote = async (tagId) => {
+    try {
+      if (userData.status) {
+        const response = await Axios.post(
+          'http://192.168.1.4:3001/api/tag/downvote',
+          { tagId, uid: userData._id, profile: true },
+          {
+            headers: {
+              'Access-Control-Allow-Origin': true,
+            },
+          }
+        );
+
+        if (response.data.status) {
+          setUpTag(Math.floor(Math.random() * (1 - 9)) + 1)
+        }
+      } else {
+        navigate('/auth/login')
+      }
+    } catch (error) {
+      console.error('Downvote failed', error);
+    }
+  };
+
   return (
     <div>
       {tags.map(tag => (
@@ -136,7 +242,7 @@ function Tag(props) {
 
             {/* Tweet content */}
             <div className="tweet-content pt">
-            {tag.audio ? (<Audioplayer url={tag.audio.src} />) : (<Link id='link-style' to={`/post/${tag._id}`} dangerouslySetInnerHTML={{ __html: parseContent(tag.content) }}></Link>)}
+              {tag.audio ? (<Audioplayer url={tag.audio.src} />) : (<Link id='link-style' to={`/post/${tag._id}`} dangerouslySetInnerHTML={{ __html: parseContent(tag.content) }}></Link>)}
             </div>
 
             {/* Date and location */}
@@ -174,35 +280,50 @@ function Tag(props) {
               <div className="number">{formatNumber(tag.replies ? tag.replies.length : '')}</div>
             </div>
             <div className="ico">
-              {tag.upvote.includes(props.userData._id) ? (
-                <span id={`up-${tag._id}`}>
-                  <box-icon type='solid' name='up-arrow' color="#6fbf7e" className="img" />
-                </span>
-              ) : (
-                <span id={`up-${tag._id}`}>
-                  <box-icon type='solid' name='up-arrow' color="#fff" className="img" />
-                </span>
-              )}
+              <span
+                id={`up-${tag._id}`}
+                onClick={() => {
+                  handleUpvote(tag._id);
+                }}
+              >
+                <box-icon
+                  type="solid"
+                  name="up-arrow"
+                  color={userData && tag.upvote.includes(userData._id) ? "#6fbf7e" : "#fff"}
+                  className="img"
+                />
+              </span>
               <div className="number">
-                <span id={`up-count-${tag._id}`} className="up-count">{formatNumber(tag.upvote ? tag.upvote.length : '')}</span>
+                <span id={`up-count-${tag._id}`} className="up-count">
+                  {formatNumber(tag.upvote ? tag.upvote.length : '')}
+                </span>
               </div>
             </div>
+
             <div className="ico">
-              {tag.downvote.includes(props.userData._id) ? (
-                <span id={`dow-${tag._id}`}>
-                  <box-icon type='solid' name='down-arrow' color="#6fbf7e" className="img" />
-                </span>
-              ) : (
-                <span id={`dow-${tag._id}`}>
-                  <box-icon type='solid' name='down-arrow' color="#fff" className="img" />
-                </span>
-              )}
+              <span
+                id={`dow-${tag._id}`}
+                onClick={() => {
+                  handleDownvote(tag._id);
+                }}
+              >
+                <box-icon
+                  type="solid"
+                  name="down-arrow"
+                  color={userData && tag.downvote.includes(userData._id) ? "#6fbf7e" : "#fff"}
+                  className="img"
+                />
+              </span>
               <div className="number">
-                <span id={`dow-count-${tag._id}`} className="down-count">{formatNumber(tag.downvote ? tag.downvote.length : '')}</span>
+                <span id={`dow-count-${tag._id}`} className="down-count">
+                  {formatNumber(tag.downvote ? tag.downvote.length : '')}
+                </span>
               </div>
             </div>
-            <div className="ico">
-              <box-icon type='solid' name='trash' color="red" className="img" />
+            <div className="ico" >
+              <box-icon type='solid' name='trash' color="red" className="img" onClick={() => {
+                displayAlert('Do you really want to delete this tag?', 'http://192.168.1.4:3001/api/tag/delete', 'Yes', 'No', `${tag._id}`);
+              }} />
             </div>
             <div className="ico">
               <box-icon name='link' color="#fff" className="img" onClick={() => copyUrl(`https://thintry.com/tag/${tag._id}`)} />
@@ -210,6 +331,18 @@ function Tag(props) {
           </div>
         </div>))}
       <div style={{ width: '100%', height: '60px' }}></div>
+      {showAlert && (
+        <Alert
+          message={alertData.message}
+          api={alertData.api}
+          leftButtonText={alertData.leftButtonText}
+          rightButtonText={alertData.rightButtonText}
+          tagId={alertData.tagId}
+          showAlert={showAlert}
+          hideAlert={() => setShowAlert(false)}
+          onAction={handleAlertAction}
+        />
+      )}
     </div>
   )
 }

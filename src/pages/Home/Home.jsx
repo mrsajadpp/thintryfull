@@ -2,11 +2,14 @@ import { React, useEffect, useState, Suspense, lazy } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 import Audioplayer from '../../components/Audioplayer/Audioplayer';
+import Alert from '../../components/Alert/Alert';
 
 function Home(props) {
     const navigate = useNavigate();
     const [userData, setData] = useState([]);
     const [tags, setTags] = useState([]);
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertData, setAlert] = useState({});
 
     function getUserDataFromCookie() {
         const cookieValue = document.cookie
@@ -25,7 +28,7 @@ function Home(props) {
     useEffect(() => {
         async function fetchAllTags() {
             try {
-                const response = await Axios.get('http://192.168.66.248:3001/api/fetch/user/tags/all', {
+                const response = await Axios.get('http://192.168.1.4:3001/api/fetch/user/tags/all', {
                     headers: {
                         'Access-Control-Allow-Origin': true,
                     },
@@ -140,6 +143,86 @@ function Home(props) {
         window.location.href = mailtoLink;
     }
 
+    const displayAlert = (message, api, leftButtonText, rightButtonText, tagId) => {
+        setAlert({
+            message,
+            api,
+            leftButtonText,
+            rightButtonText,
+            tagId
+        });
+        setShowAlert(true);
+    };
+
+    const handleAlertAction = () => {
+        async function delTag() {
+            try {
+                let response = await Axios.get('http://192.168.1.4:3001/api/tag/delete', { params: { uid: userData._id, tagId: alertData.tagId } }, {
+                    headers: {
+                        'Access-Control-Allow-Origin': true,
+                    }
+                });
+
+                if (response.data.status) {
+                    const updatedTags = await tags.filter(tag => tag._id.toString() !== alertData.tagId.toString());
+                    setTags(updatedTags);
+                    setShowAlert(false)
+                }
+            } catch (error) {
+                console.error('Fetching failed', error);
+            }
+        }
+        delTag()
+    }
+
+    const handleUpvote = async (tagId) => {
+        try {
+            if (userData.status) {
+                const response = await Axios.post(
+                    'http://192.168.1.4:3001/api/tag/upvote',
+                    { tagId, uid: userData._id },
+                    {
+                        headers: {
+                            'Access-Control-Allow-Origin': true,
+                        },
+                    }
+                );
+
+                if (response.data.status) {
+                    setTags(response.data.tags)
+                }
+            } else {
+                navigate('/auth/login')
+            }
+        } catch (error) {
+            console.error('Upvote failed', error);
+        }
+    };
+
+    const handleDownvote = async (tagId) => {
+        try {
+            if (userData.status) {
+                const response = await Axios.post(
+                    'http://192.168.1.4:3001/api/tag/downvote',
+                    { tagId, uid: userData._id },
+                    {
+                        headers: {
+                            'Access-Control-Allow-Origin': true,
+                        },
+                    }
+                );
+
+                if (response.data.status) {
+                    setTags(response.data.tags)
+                }
+            } else {
+                navigate('/auth/login')
+            }
+        } catch (error) {
+            console.error('Downvote failed', error);
+        }
+    };
+
     return (
         <div style={{ marginTop: '60px' }} id='page'>
             {tags.map(tag => (
@@ -232,50 +315,52 @@ function Home(props) {
                             <div className="number">{formatNumber(tag.replies ? tag.replies.length : '')}</div>
                         </div>
                         <div className="ico">
-                            {tag.user && tag.user._id ? (
-                                tag.upvote.includes(tag.user._id) ? (
-                                    <span id={`up-${tag._id}`}>
-                                        <box-icon type='solid' name='up-arrow' color="#6fbf7e" className="img" />
-                                    </span>
-                                ) : (
-                                    <span id={`up-${tag._id}`}>
-                                        <box-icon type='solid' name='up-arrow' color="#fff" className="img" />
-                                    </span>
-                                )
-                            ) : (
-                                <span>
-                                    <box-icon type='solid' name='up-arrow' color="#fff" className="img" />
-                                </span>
-                            )}
+                            <span
+                                id={`up-${tag._id}`}
+                                onClick={() => {
+                                    handleUpvote(tag._id);
+                                }}
+                            >
+                                <box-icon
+                                    type="solid"
+                                    name="up-arrow"
+                                    color={userData && tag.upvote.includes(userData._id) ? "#6fbf7e" : "#fff"}
+                                    className="img"
+                                />
+                            </span>
                             <div className="number">
-                                <span id={`up-count-${tag._id}`} className="up-count">{formatNumber(tag.upvote ? tag.upvote.length : '')}</span>
+                                <span id={`up-count-${tag._id}`} className="up-count">
+                                    {formatNumber(tag.upvote ? tag.upvote.length : '')}
+                                </span>
                             </div>
                         </div>
 
                         <div className="ico">
-                            {tag.user && tag.user._id ? (
-                                tag.downvote.includes(tag.user._id) ? (
-                                    <span id={`dow-${tag._id}`}>
-                                        <box-icon type='solid' name='down-arrow' color="#6fbf7e" className="img" />
-                                    </span>
-                                ) : (
-                                    <span id={`dow-${tag._id}`}>
-                                        <box-icon type='solid' name='down-arrow' color="#fff" className="img" />
-                                    </span>
-                                )
-                            ) : (
-                                <span >
-                                    <box-icon type='solid' name='down-arrow'  color="#fff" className="img" />
-                                </span>
-                            )}
+                            <span
+                                id={`dow-${tag._id}`}
+                                onClick={() => {
+                                    handleDownvote(tag._id);
+                                }}
+                            >
+                                <box-icon
+                                    type="solid"
+                                    name="down-arrow"
+                                    color={userData && tag.downvote.includes(userData._id) ? "#6fbf7e" : "#fff"}
+                                    className="img"
+                                />
+                            </span>
                             <div className="number">
-                                <span id={`dow-count-${tag._id}`} className="down-count">{formatNumber(tag.downvote ? tag.downvote.length : '')}</span>
+                                <span id={`dow-count-${tag._id}`} className="down-count">
+                                    {formatNumber(tag.downvote ? tag.downvote.length : '')}
+                                </span>
                             </div>
                         </div>
                         {tag.user && tag.user._id ? (
                             userData && userData._id == tag.user._id ? (
                                 <div className="ico">
-                                    <box-icon type='solid' name='trash' color="red" className="img" />
+                                    <box-icon type='solid' name='trash' color="red" className="img" onClick={() => {
+                                        displayAlert('Do you really want to delete this tag?', 'http://192.168.1.4:3001/api/tag/delete', 'Yes', 'No', `${tag._id}`);
+                                    }} />
                                 </div>
                             ) : (
                                 ''
@@ -289,6 +374,18 @@ function Home(props) {
                     </div>
                 </div>))}
             <div style={{ width: '100%', height: '60px' }}></div>
+            {showAlert && (
+                <Alert
+                    message={alertData.message}
+                    api={alertData.api}
+                    leftButtonText={alertData.leftButtonText}
+                    rightButtonText={alertData.rightButtonText}
+                    tagId={alertData.tagId}
+                    showAlert={showAlert}
+                    hideAlert={() => setShowAlert(false)}
+                    onAction={handleAlertAction}
+                />
+            )}
         </div>
     )
 }
