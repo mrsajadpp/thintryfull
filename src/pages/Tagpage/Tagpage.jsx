@@ -85,7 +85,7 @@ function Tagpage(props) {
     useEffect(() => {
         async function fetchTag(tagId) {
             try {
-                let response = await Axios.get('https://api.thintry.com/api/fetch/tag', { params: { tagId } }, {
+                let response = await Axios.get('https://api.thintry.com/fetch/tag', { params: { tagId } }, {
                     headers: {
                         'Access-Control-Allow-Origin': true,
                     }
@@ -93,7 +93,7 @@ function Tagpage(props) {
 
                 if (response.data.status) {
                     setTag(response.data.tag);
-                    let res = await Axios.get('https://api.thintry.com/api/fetch/tag/replies', { params: { tagId } }, {
+                    let res = await Axios.get('https://api.thintry.com/fetch/tag/replies', { params: { tagId } }, {
                         headers: {
                             'Access-Control-Allow-Origin': true,
                         }
@@ -168,7 +168,7 @@ function Tagpage(props) {
         try {
             if (userData.status) {
                 const response = await Axios.post(
-                    'https://api.thintry.com/api/tag/upvote',
+                    'https://api.thintry.com/tag/upvote',
                     { tagId, uid: userData._id },
                     {
                         headers: {
@@ -192,7 +192,7 @@ function Tagpage(props) {
         try {
             if (userData.status) {
                 const response = await Axios.post(
-                    'https://api.thintry.com/api/tag/downvote',
+                    'https://api.thintry.com/tag/downvote',
                     { tagId, uid: userData._id },
                     {
                         headers: {
@@ -233,7 +233,7 @@ function Tagpage(props) {
     const handleAlertAction = () => {
         async function delTag() {
             try {
-                let response = await Axios.get('https://api.thintry.com/api/tag/delete', { params: { uid: userData._id, tagId: alertData.tagId } }, {
+                let response = await Axios.get('https://api.thintry.com/tag/delete', { params: { uid: userData._id, tagId: alertData.tagId } }, {
                     headers: {
                         'Access-Control-Allow-Origin': true,
                     }
@@ -413,7 +413,7 @@ function Tagpage(props) {
                             userData && userData._id == tag.user._id ? (
                                 <div className="ico">
                                     <box-icon type='solid' name='trash' color="red" className="img" onClick={() => {
-                                        displayAlert('Do you really want to delete this tag?', 'https://api.thintry.com/api/tag/delete', 'Yes', 'No', `${tag._id}`);
+                                        displayAlert('Do you really want to delete this tag?', 'https://api.thintry.com/tag/delete', 'Yes', 'No', `${tag._id}`);
                                     }} />
                                 </div>
                             ) : (

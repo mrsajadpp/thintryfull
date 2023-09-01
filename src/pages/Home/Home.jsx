@@ -28,21 +28,26 @@ function Home(props) {
     useEffect(() => {
         async function fetchAllTags() {
             try {
-                const response = await Axios.post('https://api.thintry.com/api/fetch/user/tags/all', {
+                const response = await Axios.get('https://api.thintry.com/fetch/user/tags/all', {
                     headers: {
                         'Access-Control-Allow-Origin': true,
                     },
                 });
 
                 if (response.data.status) {
+                    console.log(response.data.tags)
                     setTags(response.data.tags);
+                } else {
+                    setTags('')
                 }
             } catch (error) {
                 console.error('Fetching failed', error);
             }
         }
         fetchAllTags();
-    }, []);
+    }, [props,tags]);
+
+    console.log(tags)
 
     useEffect(() => {
         let userData = getUserDataFromCookie();
@@ -157,7 +162,7 @@ function Home(props) {
     const handleAlertAction = () => {
         async function delTag() {
             try {
-                let response = await Axios.get('https://api.thintry.com/api/tag/delete', { params: { uid: userData._id, tagId: alertData.tagId } }, {
+                let response = await Axios.get('https://api.thintry.com/tag/delete', { params: { uid: userData._id, tagId: alertData.tagId } }, {
                     headers: {
                         'Access-Control-Allow-Origin': true,
                     }
@@ -179,7 +184,7 @@ function Home(props) {
         try {
             if (userData.status) {
                 const response = await Axios.post(
-                    'https://api.thintry.com/api/tag/upvote',
+                    'https://api.thintry.com/tag/upvote',
                     { tagId, uid: userData._id },
                     {
                         headers: {
@@ -203,7 +208,7 @@ function Home(props) {
         try {
             if (userData.status) {
                 const response = await Axios.post(
-                    'https://api.thintry.com/api/tag/downvote',
+                    'https://api.thintry.com/tag/downvote',
                     { tagId, uid: userData._id },
                     {
                         headers: {
@@ -359,7 +364,7 @@ function Home(props) {
                             userData && userData._id == tag.user._id ? (
                                 <div className="ico">
                                     <box-icon type='solid' name='trash' color="red" className="img" onClick={() => {
-                                        displayAlert('Do you really want to delete this tag?', 'https://api.thintry.com/api/tag/delete', 'Yes', 'No', `${tag._id}`);
+                                        displayAlert('Do you really want to delete this tag?', 'https://api.thintry.com/tag/delete', 'Yes', 'No', `${tag._id}`);
                                     }} />
                                 </div>
                             ) : (

@@ -141,7 +141,7 @@ function Editprofile(props) {
         const formData = new FormData(form);
 
         try {
-            let response = await Axios.get('https://api.thintry.com/api/user/update', { params: { firstname: formData.get('firstname'), lastname: formData.get('lastname'), username: formData.get('username'), about: formData.get('about'), _id: userData._id } }, {
+            let response = await Axios.get('https://api.thintry.com/user/update', { params: { firstname: formData.get('firstname'), lastname: formData.get('lastname'), username: formData.get('username'), about: formData.get('about'), _id: userData._id } }, {
                 headers: {
                     'Access-Control-Allow-Origin': true,
                 }
@@ -172,7 +172,7 @@ function Editprofile(props) {
             username.classList.replace('noerror-inp', 'error-inp');
         } else {
             Axios.get(
-                'https://api.thintry.com/api/username/check',
+                'https://api.thintry.com/username/check',
                 { params: { username: newValue } },
                 {
                     headers: {

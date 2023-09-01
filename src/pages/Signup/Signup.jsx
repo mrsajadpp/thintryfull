@@ -101,7 +101,7 @@ function Signup(props) {
     const formData = new FormData(form);
 
     try {
-      let response = await Axios.get('https://api.thintry.com/api/auth/signup', { params: { firstname: formData.get('firstname'), lastname: formData.get('lastname'), username: formData.get('username'), password: formData.get('password'), email: formData.get('email') } }, {
+      let response = await Axios.get('https://api.thintry.com/auth/signup', { params: { firstname: formData.get('firstname'), lastname: formData.get('lastname'), username: formData.get('username'), password: formData.get('password'), email: formData.get('email') } }, {
         headers: {
           'Access-Control-Allow-Origin': true,
         }
@@ -164,7 +164,7 @@ function Signup(props) {
                 if (newValue.length <= 0) {
                   username.classList.replace('noerror-inp', 'error-inp');
                 } else {
-                  Axios.get('https://api.thintry.com/api/username/check', { params: { username: newValue } }, {
+                  Axios.get('https://api.thintry.com/username/check', { params: { username: newValue } }, {
                     headers: {
                       'Access-Control-Allow-Origin': true,
                     }

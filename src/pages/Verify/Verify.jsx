@@ -100,7 +100,7 @@ function Verify(props) {
 
         if (otpInp.value.length >= 6) {
             try {
-                let response = await Axios.get('https://api.thintry.com/api/auth/verify/check', { params: { otp: otpInp.value, verificationCode, uid } }, {
+                let response = await Axios.get('https://api.thintry.com/auth/verify/check', { params: { otp: otpInp.value, verificationCode, uid } }, {
                     headers: {
                         'Access-Control-Allow-Origin': true,
                     }
