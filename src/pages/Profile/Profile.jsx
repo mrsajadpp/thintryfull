@@ -65,7 +65,7 @@ function Profile(props) {
       try {
         const userData = await getUserDataFromCookie();
         setData(userData)
-        let response = await Axios.get('http://192.168.1.4:3001/api/fetch/user', { params: { username: userData.username } }, {
+        let response = await Axios.get('http://api.thintry.com/api/fetch/user', { params: { username: userData.username } }, {
           headers: {
             'Access-Control-Allow-Origin': true,
           }
@@ -85,7 +85,7 @@ function Profile(props) {
     async function fetchPost() {
       try {
         const userData = await getUserDataFromCookie();
-        let response = await Axios.get('http://192.168.1.4:3001/api/fetch/user/posts', { params: { uid: userData._id.toString() } }, {
+        let response = await Axios.get('http://api.thintry.com/api/fetch/user/posts', { params: { uid: userData._id.toString() } }, {
           headers: {
             'Access-Control-Allow-Origin': true,
           }
@@ -140,9 +140,9 @@ function Profile(props) {
           <div className="dp">
             <div className="dp-ring">
               {userData.profile ? (
-                <img src={userData.profile.startsWith('/') ? 'https://thintry.com' + userData.profile : userData.profile} alt={userData.firstname + ' ' + userData.lastname} onError={(event) => { event.target.src = 'https://thintry.com/img/demopic.png'; event.target.onError = null; }} />
+                <img src={userData.profile.startsWith('/') ? 'https://thintry.com' + userData.profile : userData.profile} alt={userData.firstname + ' ' + userData.lastname} onError={(event) => { event.target.src = 'http://api.thintry.com/img/demopic.png'; event.target.onError = null; }} />
               ) : (
-                <img src="https://thintry.com/img/demopic.png" alt="Default Profile" />
+                <img src="http://api.thintry.com/img/demopic.png" alt="Default Profile" />
               )}
             </div>
             <div className="name-tag">

@@ -56,7 +56,7 @@ function Tag(props) {
   useEffect(() => {
     async function fetchTags(uid) {
       try {
-        let response = await Axios.get('http://192.168.1.4:3001/api/fetch/user/tags', { params: { uid } }, {
+        let response = await Axios.get('http://api.thintry.com/api/fetch/user/tags', { params: { uid } }, {
           headers: {
             'Access-Control-Allow-Origin': true,
           }
@@ -135,7 +135,7 @@ function Tag(props) {
   const handleAlertAction = () => {
     async function delTag() {
       try {
-        let response = await Axios.get('http://192.168.1.4:3001/api/tag/delete', { params: { uid: userData._id, tagId: alertData.tagId } }, {
+        let response = await Axios.get('http://api.thintry.com/api/tag/delete', { params: { uid: userData._id, tagId: alertData.tagId } }, {
           headers: {
             'Access-Control-Allow-Origin': true,
           }
@@ -157,7 +157,7 @@ function Tag(props) {
     try {
       if (userData.status) {
         const response = await Axios.post(
-          'http://192.168.1.4:3001/api/tag/upvote',
+          'http://api.thintry.com/api/tag/upvote',
           { tagId, uid: userData._id },
           {
             headers: {
@@ -181,7 +181,7 @@ function Tag(props) {
     try {
       if (userData.status) {
         const response = await Axios.post(
-          'http://192.168.1.4:3001/api/tag/downvote',
+          'http://api.thintry.com/api/tag/downvote',
           { tagId, uid: userData._id, profile: true },
           {
             headers: {
@@ -210,7 +210,7 @@ function Tag(props) {
             <div className="user pr">
               <div className="userl" onClick={() => { navigate('/profile') }}>
                 <div className="profile">
-                  <img src={props.userData.profile ? props.userData.profile.startsWith('/') ? 'https://thintry.com' + props.userData.profile : props.userData.profile : props.userData.profile} onError={(event) => { event.target.src = 'https://thintry.com/img/demopic.png'; event.target.onError = null; }} />
+                  <img src={props.userData.profile ? props.userData.profile.startsWith('/') ? 'https://thintry.com' + props.userData.profile : props.userData.profile : props.userData.profile} onError={(event) => { event.target.src = 'http://api.thintry.com/img/demopic.png'; event.target.onError = null; }} />
                 </div>
                 <div className="username">
                   <div className="name">{props.userData.firstname} {props.userData.lastname}
@@ -242,7 +242,7 @@ function Tag(props) {
 
             {/* Tweet content */}
             <div className="tweet-content pt">
-              {tag.audio ? (<Audioplayer url={tag.audio.src} />) : (<Link id='link-style' to={`/post/${tag._id}`} dangerouslySetInnerHTML={{ __html: parseContent(tag.content) }}></Link>)}
+              {tag.audio ? (<Audioplayer url={tag.audio.src} />) : (<Link id='link-style' to={`/tag/${tag._id}`} dangerouslySetInnerHTML={{ __html: parseContent(tag.content) }}></Link>)}
             </div>
 
             {/* Date and location */}
@@ -322,11 +322,11 @@ function Tag(props) {
             </div>
             <div className="ico" >
               <box-icon type='solid' name='trash' color="red" className="img" onClick={() => {
-                displayAlert('Do you really want to delete this tag?', 'http://192.168.1.4:3001/api/tag/delete', 'Yes', 'No', `${tag._id}`);
+                displayAlert('Do you really want to delete this tag?', 'http://api.thintry.com/api/tag/delete', 'Yes', 'No', `${tag._id}`);
               }} />
             </div>
             <div className="ico">
-              <box-icon name='link' color="#fff" className="img" onClick={() => copyUrl(`https://thintry.com/tag/${tag._id}`)} />
+              <box-icon name='link' color="#fff" className="img" onClick={() => copyUrl(`http://api.thintry.com/tag/${tag._id}`)} />
             </div>
           </div>
         </div>))}
